@@ -26,7 +26,7 @@ parse_range(Range) when is_list(Range) ->
         IntIp = ipv4_to_int(Ip),
         SubnetShift = 32 - Subnet,
         RangeStart = (IntIp bsr SubnetShift) bsl SubnetShift,
-        WildCard = lists:foldl(fun(_, Acc) -> (Acc bsl 1) bor 1 end, 0, lists:seq(0, SubnetShift - 1)),
+        WildCard = bnot ((-1) bsl SubnetShift),
         RangeEnd = RangeStart bor WildCard,
         {ok, {RangeStart, RangeEnd}}
     end.
