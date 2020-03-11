@@ -1,0 +1,21 @@
+---
+
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2.7-stretch
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS images.scrapinghub.com
+          docker build -t images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7} .
+          docker push images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7}
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            docker tag images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7} images.scrapinghub.com/erl-iputils/${CIRCLE_BRANCH}:latest
+            docker push images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:latest
+          fi
