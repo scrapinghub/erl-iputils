@@ -1,21 +1,34 @@
 ---
-
 version: 2
 
+workflows:
+  version: 2
+  test:
+    jobs:
+      - otp-20
+      - otp-21
+      - otp-22
+
 jobs:
-  build:
+  otp-20: &test-template
     docker:
-      - image: circleci/python:2.7-stretch
+      - image: circleci/erlang:20.3.8.22
+    working_directory: ~/repo
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - run:
+          name: Run EUnit
+          command: make eunit
+      - run:
+          name: Run Dialyzer
+          command: make dialyze
 
-      - run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASS images.scrapinghub.com
-          docker build -t images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7} .
-          docker push images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7}
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            docker tag images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:${CIRCLE_SHA1:0:7} images.scrapinghub.com/erl-iputils/${CIRCLE_BRANCH}:latest
-            docker push images.scrapinghub.com/crawlera/erl-iputils/${CIRCLE_BRANCH}:latest
-          fi
+  otp-21:
+    <<: *test-template
+    docker:
+      - image: circleci/erlang:21.3
+
+  otp-22:
+    <<: *test-template
+    docker:
+      - image: circleci/erlang:22.2

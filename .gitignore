@@ -5,3 +5,4 @@ deps/
 .erlang.mk/
 ebin/
 *.beam
+*.plt
