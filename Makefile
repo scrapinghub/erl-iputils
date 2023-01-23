@@ -5,5 +5,5 @@ PROJECT_VERSION = 0.1.1
 
 TEST_DEPS = triq
 
-PLT_APPS = compiler crypto hipe
+PLT_APPS = compiler crypto
 include erlang.mk

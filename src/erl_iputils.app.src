@@ -1,0 +1,8 @@
+{application, 'erl_iputils', [
+	{description, "erlan ip utils"},
+	{vsn, "0.1.1"},
+	{modules, ['erl_iputils']},
+	{registered, []},
+	{applications, [kernel,stdlib]},
+	{env, []}
+]}.
